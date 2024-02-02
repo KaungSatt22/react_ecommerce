@@ -28,6 +28,8 @@ const SignIn = () => {
     } catch (error) {
       setError("Invalid Email or Password");
       setCredential({ email: "", password: "" });
+    } finally {
+      setError(null);
     }
   };
   return (
@@ -75,7 +77,7 @@ const SignIn = () => {
         >
           Forget Password
         </NavLink>
-        <p className="mt-10 text-center font-light">
+        <p className="my-5 text-center font-light">
           If you don't have account
           <NavLink to="/signup" className="text-blue-400 hover:underline p-2">
             signup

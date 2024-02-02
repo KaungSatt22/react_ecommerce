@@ -5,6 +5,7 @@ import { sendEmailVerification } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { NavLink } from "react-router-dom";
 
 const SignUp = () => {
   const [credential, setcredential] = useState({
@@ -15,7 +16,6 @@ const SignUp = () => {
   const { signUp } = useAuth();
   const navigate = useNavigate();
   const handleCredentialChange = (e) => {
-    setError(null);
     const { name, value } = e.target;
     setcredential((prev) => ({
       ...prev,
@@ -25,19 +25,17 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (credential.email && credential.password.trim().length > 6) {
+    if (credential.email && credential.password) {
       try {
         await signUp(credential.email, credential.password);
         await sendEmailVerification(auth.currentUser);
-
-        navigate("/login");
+        navigate("/");
       } catch (error) {
-        setError("Email Already In Use");
+        setError(error.message.split(":")[1]);
         setcredential({ email: "", password: "" });
+      } finally {
+        setError(null);
       }
-    } else {
-      setError("Password Must be 6 charactor");
-      setcredential({ email: "", password: "" });
     }
   };
   return (
@@ -76,9 +74,15 @@ const SignUp = () => {
           />
         </div>
         {error && <p className="text-red-500 text-center text-xl">{error}</p>}
-        <button className="p-3 text-xl border-2 bg-black text-white rounded-lg mt-10">
+        <button className="p-3 text-xl border-2 bg-black text-white rounded-lg ">
           Create Account
         </button>
+        <p className="text-center my-5 font-light">
+          Have You Already Account{" "}
+          <NavLink to="/login" className="text-blue-500 hover:underline">
+            signin
+          </NavLink>
+        </p>
       </form>
     </div>
   );

@@ -1,22 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-
-import { useSearch } from "../hooks/useSearch";
 import { useCart } from "../hooks/useCart";
-import { auth } from "../firebase";
 import { useState } from "react";
-
 import Cart from "./Cart";
 import { useAuth } from "../hooks/useAuth";
 
 const Navbar = () => {
   const { authUser: user, logout } = useAuth();
-  const { cartItem } = useCart();
-  const { search, handleSearch } = useSearch();
+  const { cartItem, filterItem, filter } = useCart();
   const [isBtn, setIsBtn] = useState(false);
-  const logoutHandler = () => {
-    auth.signOut();
-    logout();
+  const logoutHandler = async () => {
+    await logout();
   };
   const totalQuantity = cartItem.reduce(
     (total, item) => total + item.quantity,
@@ -30,14 +24,14 @@ const Navbar = () => {
         </NavLink>
         <ul className="flex flex-col items-center space-x-2 space-y-3 lg:flex-row lg:space-y-0">
           <li>
-            {user ? (
+            {user && (
               <div className="space-x-5">
                 <input
                   type="text"
                   className="w-[15rem] border-2 outline-none p-2 rounded-lg text-xl"
                   placeholder="Search Item"
-                  value={search}
-                  onChange={handleSearch}
+                  value={filter}
+                  onChange={filterItem}
                 />
                 <button
                   onClick={() => setIsBtn(!isBtn)}
@@ -55,15 +49,6 @@ const Navbar = () => {
                   onClick={logoutHandler}
                 >
                   Log Out
-                </NavLink>
-              </div>
-            ) : (
-              <div className="mb-10 lg:mb-0">
-                <NavLink
-                  to="/login"
-                  className="border-2 bg-black text-white p-3 text-xl rounded-lg"
-                >
-                  Sign In
                 </NavLink>
               </div>
             )}

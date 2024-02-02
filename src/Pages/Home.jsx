@@ -1,19 +1,18 @@
 import React from "react";
 import { getAllProducts } from "../api/api";
 import Products from "../components/Products";
-
 import { useQuery } from "@tanstack/react-query";
-import { useSearch } from "../hooks/useSearch";
 import { SuspenseLoading } from "../components/Loading";
+import { useCart } from "../hooks/useCart";
 
 const Home = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["get", "Products"],
     queryFn: getAllProducts,
   });
-  const { search } = useSearch();
+  const { filter } = useCart();
   const showData = data?.filter((item) =>
-    item.title.toLowerCase().includes(search.toLowerCase())
+    item.title.toLowerCase().includes(filter.toLowerCase())
   );
   return (
     <div>

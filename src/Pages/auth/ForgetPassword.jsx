@@ -18,6 +18,8 @@ const ForgetPassword = () => {
       } catch (error) {
         setError("Email Not Found!");
         setEmail("");
+      } finally {
+        setError(null);
       }
     }
   };

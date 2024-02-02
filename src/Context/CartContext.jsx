@@ -2,6 +2,7 @@ import { useReducer } from "react";
 import { createContext } from "react";
 
 const initialState = {
+  filter: "",
   cart: [],
 };
 export const CartContext = createContext({});
@@ -10,6 +11,7 @@ export const INITIAL_TYPE = {
   ADDTOCART: "ADDTOCART",
   REDUCECART: "REDUCECART",
   REMOVETOCART: "REMOVETOCART",
+  FILTERITEM: "FILTERITEM",
 };
 
 const reducer = (state, { type, payload }) => {
@@ -46,28 +48,32 @@ const reducer = (state, { type, payload }) => {
       const removeItemExist = state.cart.findIndex(
         (cart) => cart.id === payload.id
       );
-      if (removeItemExist !== -1) {
-        let newArr = [...state.cart];
-        if (newArr[removeItemExist].quantity > 1) {
-          newArr[removeItemExist].quantity--;
-          newArr[removeItemExist].total =
-            newArr[removeItemExist].quantity * newArr[removeItemExist].price;
-          return {
-            ...state,
-            cart: newArr,
-          };
-        } else {
-          newArr.splice(removeItemExist, 1);
-          return {
-            ...state,
-            cart: newArr,
-          };
-        }
+      let newArr = [...state.cart];
+      if (newArr[removeItemExist].quantity > 1) {
+        newArr[removeItemExist].quantity--;
+        newArr[removeItemExist].total =
+          newArr[removeItemExist].quantity * newArr[removeItemExist].price;
+        return {
+          ...state,
+          cart: newArr,
+        };
+      } else {
+        newArr.splice(removeItemExist, 1);
+        return {
+          ...state,
+          cart: newArr,
+        };
       }
+
     case INITIAL_TYPE.REMOVETOCART:
       return {
         ...state,
         cart: state.cart.filter((cart) => cart.id !== payload.id),
+      };
+    case INITIAL_TYPE.FILTERITEM:
+      return {
+        ...state,
+        filter: payload,
       };
     default:
       return state;
@@ -84,9 +90,12 @@ export const CartContextProvider = ({ children }) => {
   const removeCartItem = (id) => {
     dispatch({ type: INITIAL_TYPE.REMOVETOCART, payload: { id } });
   };
+  const filterItem = (e) => {
+    dispatch({ type: INITIAL_TYPE.FILTERITEM, payload: e.target.value });
+  };
   return (
     <CartContext.Provider
-      value={{ state, cartAdd, cartReduce, removeCartItem }}
+      value={{ state, cartAdd, cartReduce, removeCartItem, filterItem }}
     >
       {children}
     </CartContext.Provider>
