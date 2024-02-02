@@ -1,10 +1,6 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
-
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useUserAuth } from "../../hooks/useUserAuth";
+import { useAuth } from "../../hooks/useAuth";
 
 const SignIn = () => {
   const [credential, setCredential] = useState({
@@ -20,28 +16,20 @@ const SignIn = () => {
       [name]: value,
     }));
   };
-  const user = useUserAuth();
   const navigate = useNavigate();
+  const { signIn } = useAuth();
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (credential.email && credential.password) {
-        await signInWithEmailAndPassword(
-          auth,
-          credential.email,
-          credential.password
-        );
+        await signIn(credential.email, credential.password);
+        navigate("/");
       }
     } catch (error) {
       setError("Invalid Email or Password");
-      setCredential((prev) => ({ email: "", password: "" }));
+      setCredential({ email: "", password: "" });
     }
   };
-  useEffect(() => {
-    if (user) {
-      navigate("/");
-    }
-  }, [user]);
   return (
     <div className="container mx-auto mt-20">
       <form
@@ -81,12 +69,15 @@ const SignIn = () => {
         <button className="p-3 text-xl border-2 bg-black text-white rounded-lg">
           Login
         </button>
-        <NavLink to="/forgetpassword" className="ml-5">
+        <NavLink
+          to="/forgetpassword"
+          className="ml-5 text-blue-400 hover:underline "
+        >
           Forget Password
         </NavLink>
         <p className="mt-10 text-center font-light">
           If you don't have account
-          <NavLink to="/signup" className="text-blue-400 p-2">
+          <NavLink to="/signup" className="text-blue-400 hover:underline p-2">
             signup
           </NavLink>
         </p>

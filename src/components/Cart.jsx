@@ -1,19 +1,7 @@
-import React from "react";
-
-import { INITIAL_TYPE } from "../Context/CartContext";
 import { useCart } from "../hooks/useCart";
 
 const Cart = () => {
-  const { cartItem, dispatch } = useCart();
-  const cartAdd = (id, price, image) => {
-    dispatch({ type: INITIAL_TYPE.ADDTOCART, payload: { id, price, image } });
-  };
-  const cartReduce = (id) => {
-    dispatch({ type: INITIAL_TYPE.REDUCECART, payload: { id } });
-  };
-  const removeCartItem = (id) => {
-    dispatch({ type: INITIAL_TYPE.REMOVETOCART, payload: { id } });
-  };
+  const { cartItem, cartAdd, cartReduce, removeCartItem } = useCart();
   const totalPrice =
     cartItem.length > 0 &&
     cartItem?.map((cart) => cart.total).reduce((a, b) => a + b);
@@ -34,22 +22,22 @@ const Cart = () => {
               <div className="flex items-center space-x-3">
                 <button
                   onClick={() => cartAdd(cart.id, cart.price, cart.image)}
-                  className="px-2  border-2 border-black text-black text-xl rounded-lg hover:bg-black hover:text-white duration-500 transition-colors ease-in-out hover:scale-95"
+                  className="px-2 border-2 text-black text-xl rounded-lg  hover:bg-black hover:text-white duration-500 transition-colors ease-in-out hover:scale-95"
                 >
                   +
                 </button>
-                <p className="border-2 border-gray-600 px-2 rounded-lg font-thin text-xl">
+                <p className="border-2 px-2 rounded-lg font-thin text-xl">
                   x{cart.quantity}
                 </p>
                 <button
                   onClick={() => cartReduce(cart.id)}
-                  className="px-2  border-2 border-black text-black text-xl rounded-lg hover:bg-black hover:text-white duration-500 transition-colors ease-in-out hover:scale-95"
+                  className="px-2  border-2 text-black text-xl rounded-lg hover:bg-black hover:text-white duration-500 transition-colors ease-in-out hover:scale-95"
                 >
                   -
                 </button>
                 <button
                   onClick={() => removeCartItem(cart.id)}
-                  className="px-2  border-2 border-black text-black text-xl rounded-lg hover:bg-black hover:text-white duration-500 transition-colors ease-in-out hover:scale-95"
+                  className="px-2  border-2 text-black text-xl rounded-lg hover:bg-black hover:text-white duration-500 transition-colors ease-in-out hover:scale-95"
                 >
                   X
                 </button>

@@ -1,12 +1,10 @@
 import React from "react";
 import { useState } from "react";
 
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from "firebase/auth";
+import { sendEmailVerification } from "firebase/auth";
 import { auth } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const SignUp = () => {
   const [credential, setcredential] = useState({
@@ -14,6 +12,7 @@ const SignUp = () => {
     password: "",
   });
   const [error, setError] = useState(null);
+  const { signUp } = useAuth();
   const navigate = useNavigate();
   const handleCredentialChange = (e) => {
     setError(null);
@@ -23,24 +22,22 @@ const SignUp = () => {
       [name]: value,
     }));
   };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (credential.email && credential.password.trim().length > 6) {
       try {
-        await createUserWithEmailAndPassword(
-          auth,
-          credential.email,
-          credential.password
-        );
+        await signUp(credential.email, credential.password);
         await sendEmailVerification(auth.currentUser);
-        navigate("/");
+
+        navigate("/login");
       } catch (error) {
         setError("Email Already In Use");
-        setcredential((prev) => ({ email: "", password: "" }));
+        setcredential({ email: "", password: "" });
       }
     } else {
       setError("Password Must be 6 charactor");
-      setcredential((prev) => ({ email: "", password: "" }));
+      setcredential({ email: "", password: "" });
     }
   };
   return (

@@ -4,10 +4,7 @@ import { createContext } from "react";
 const initialState = {
   cart: [],
 };
-export const CartContext = createContext({
-  cart: [],
-  dispatch: () => {},
-});
+export const CartContext = createContext({});
 
 export const INITIAL_TYPE = {
   ADDTOCART: "ADDTOCART",
@@ -78,8 +75,19 @@ const reducer = (state, { type, payload }) => {
 };
 export const CartContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const cartAdd = (id, price, image) => {
+    dispatch({ type: INITIAL_TYPE.ADDTOCART, payload: { id, price, image } });
+  };
+  const cartReduce = (id) => {
+    dispatch({ type: INITIAL_TYPE.REDUCECART, payload: { id } });
+  };
+  const removeCartItem = (id) => {
+    dispatch({ type: INITIAL_TYPE.REMOVETOCART, payload: { id } });
+  };
   return (
-    <CartContext.Provider value={{ state, dispatch }}>
+    <CartContext.Provider
+      value={{ state, cartAdd, cartReduce, removeCartItem }}
+    >
       {children}
     </CartContext.Provider>
   );

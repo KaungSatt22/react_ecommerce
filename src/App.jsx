@@ -12,6 +12,7 @@ import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import Details from "./Pages/Details";
 import { CartContextProvider } from "./Context/CartContext";
 import { SearchContextProvider } from "./Context/SearchContext";
+import { AuthContextProvider } from "./Context/AuthContext";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,20 +26,22 @@ const App = () => {
   return (
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <CartContextProvider>
-          <SearchContextProvider>
-            <Navbar />
-            <Routes>
-              <Route path="/login" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/forgetpassword" element={<ForgetPassword />} />
-              <Route element={<PrivateRoute />}>
-                <Route path="/" element={<Home />} />
-                <Route path="/products/:id" element={<Details />} />
-              </Route>
-            </Routes>
-          </SearchContextProvider>
-        </CartContextProvider>
+        <AuthContextProvider>
+          <CartContextProvider>
+            <SearchContextProvider>
+              <Navbar />
+              <Routes>
+                <Route path="/login" element={<SignIn />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/forgetpassword" element={<ForgetPassword />} />
+                <Route element={<PrivateRoute />}>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products/:id" element={<Details />} />
+                </Route>
+              </Routes>
+            </SearchContextProvider>
+          </CartContextProvider>
+        </AuthContextProvider>
       </QueryClientProvider>
     </BrowserRouter>
   );
